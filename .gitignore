@@ -2,5 +2,6 @@
 
 *.iml
 
-!.gitignore
+!.dockerignore
 !.editorconfig
+!.gitignore

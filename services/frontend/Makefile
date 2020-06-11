@@ -35,7 +35,7 @@ run-dev: ## Run service locally
 	docker-compose \
 		-f docker-compose-dev.yml \
 		up \
-			api
+			frontend
 
 
 setup: ensure-venv ## Make sure local environment are setup and requirements installed

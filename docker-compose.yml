@@ -6,41 +6,21 @@ services:
       context: services/api
       dockerfile: Dockerfile
     ports:
-      - 8081:8000
-    volumes:
-      - ${PWD}/services/api/:/app/
-
-  frontend-dev:
-    build:
-      context: services/frontend
-      dockerfile: Dockerfile
-    image: localhost/proxy-demo/frontend-dev
-#    environment:
-#      CHOKIDAR_USEPOLLING: "true"
-    ports:
-      - 8082:3001
-    volumes:
-      - ${PWD}/services/frontend/src/App.js:/app/src/App.js
-    stdin_open: true
-    command: ["npm", "start"]
+      - 8081:80
 
   frontend:
     build:
       context: services/frontend
       dockerfile: Dockerfile.nginx
-      args:
-        BUILD_IMAGE: "localhost/proxy-demo/frontend-dev"
     ports:
-      - 8083:80
-    depends_on:
-      - frontend-dev
+      - 8082:80
 
   site:
     build:
       context: services/site
       dockerfile: Dockerfile
     ports:
-      - 8084:80
+      - 8083:80
 
   proxy:
     build:
