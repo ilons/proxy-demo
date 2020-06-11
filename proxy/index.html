@@ -1,13 +1,36 @@
 <!doctype html>
 <html>
-<head>
+  <head>
     <title>Proxy-demo</title>
-</head>
-<body>
-<p>This is a demonstration of putting services behind a proxy.</p>
-<p>All services are serving content relative to slash (/).</p>
-<p>Python API: <a href="/api/">/api/</a> => <a href="http://localhost:8081/">localhost:8081/</a> <a href="http://localhost:8081/api/">api/</a></p>
-<p>React frontend: <a href="/frontend/">/frontend/</a> => <a href="http://localhost:8082/">localhost:8082/</a> <a href="http://localhost:8082/frontend/">frontend/</a></p>
-<p>Static Site: <a href="/site/">/site/</a> => <a href="http://localhost:8083/">localhost:8083/</a> <a href="http://localhost:8083/site/">site/</a></p>
-</body>
+  </head>
+  <body>
+    <div>
+      <p>This is a demonstration of putting services behind a proxy.</p>
+      <p>All services are serving content relative to slash (/).</p>
+    </div>
+    <div>
+      <h3>Backends</h3>
+      <p>List of backends available:</p>
+      <p>
+        <div>Python API: <a href="http://localhost:8081/">localhost:8081/</a></div>
+        <div>React frontend: <a href="http://localhost:8082/">localhost:8082/</a></div>
+        <div>Static Site: <a href="http://localhost:8083/">localhost:8083/</a></div>
+      </p>
+    </div>
+    <div>
+      <h3>Proxy routes</h3>
+      <p>NginX proxy_pass with no trailing slash, and no host header set:</p>
+      <p>
+        <div><a href="/api/">/api/</a> => <a href="http://localhost:8081/api/">localhost:8081/api/</a></div>
+        <div><a href="/frontend/">/frontend/</a> => <a href="http://localhost:8082/frontend/">localhost:8082/frontend/</a></div>
+        <div><a href="/site/">/site/</a> => <a href="http://localhost:8083/site/">localhost:8083/site/</a></div>
+      </p>
+      <p>NginX proxy_pass including trailing slash, with host, x-forwarded-for and x-forwarded-path headers set:</p>
+      <p>
+        <div><a href="/proxy/api/">/proxy/api/</a> => <a href="http://localhost:8081/">localhost:8081/</a></div>
+        <div><a href="/proxy/frontend/">/proxy/frontend/</a> => <a href="http://localhost:8082/">localhost:8082/</a></div>
+        <div><a href="/proxy/site/">/proxy/site/</a> => <a href="http://localhost:8083/">localhost:8083/</a></div>
+      </p>
+    </div>
+  </body>
 </html>
