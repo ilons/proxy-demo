@@ -22,7 +22,9 @@ def get_response(message: str, request: fastapi.Request, routes: list, status_co
             'message': message,
         },
         'request': get_request_info(request),
-        '_links': get_links(request, routes),
+        '_links': {
+            'self': get_link(request),
+        },
     }
 
 
@@ -41,37 +43,30 @@ def get_routes():
     """
     return [
         fastapi.routing.APIRoute('/', endpoint=get_root, methods=['GET']),
-        fastapi.routing.APIRoute('/status', get_status, methods=['GET']),
     ]
 
 
-def get_links(request: fastapi.Request, routes: list):
-    """ Get links to resources
+def get_link(request: fastapi.Request):
+    """ Get link to requested resource
 
     :param request:
-    :param routes:
     :return:
     """
-    # self_path = request.url.path[len(PROXY_PATH) + 1:]
-    self_path = request.url.path
+    if 'x-forwarded-path' in request.headers:
+        link_path = '/'.join([
+            request.headers.get('x-forwarded-path', '').rstrip('/'),
+            request.url.path.strip('/'),
+        ])
+    else:
+        link_path = request.url.path
 
-    links = {}
-    for ep_path in routes:
-        link_key = ep_path[1:]
-        if link_key == self_path:
-            link_key = 'self'
-        if not link_key:
-            link_key = 'root'
-
-        links[link_key] = urllib.parse.urlunsplit((
-            request.url.scheme,
-            request.url.netloc,
-            ep_path,
-            request.url.query,
-            request.url.fragment,
-        ))
-
-    return links
+    return urllib.parse.urlunsplit((
+        request.url.scheme,
+        request.url.netloc,
+        link_path,
+        request.url.query,
+        request.url.fragment,
+    ))
 
 
 def get_request_info(request: fastapi.Request):
@@ -95,19 +90,6 @@ def get_request_info(request: fastapi.Request):
         'query': dict(request.query_params.items()),
         'client': dict(zip(['host', 'port'], request.client)),
     }
-
-
-async def get_status(request: fastapi.Request):
-    """ Healthcheck endpoint
-
-    :param request:
-    :return:
-    """
-    return get_response(
-        'This is the service status route',
-        request,
-        [route.path for route in get_routes()],
-    )
 
 
 async def get_root(request: fastapi.Request):

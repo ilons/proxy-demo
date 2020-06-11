@@ -2,14 +2,12 @@ import fastapi
 import starlette.exceptions
 
 import demo.routers
-import demo.routers.api
-
-PROXY_PATH = 'api'
+import demo.routers.status
 
 
 app = fastapi.FastAPI()
 app.include_router(demo.routers.get_router())
-# app.include_router(demo.routers.api.get_router(), prefix=f'/{PROXY_PATH}')
+app.include_router(demo.routers.status.get_router(), prefix='/status')
 
 
 @app.exception_handler(starlette.exceptions.HTTPException)
